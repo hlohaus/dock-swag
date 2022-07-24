@@ -1,0 +1,23 @@
+#override defaults for dev
+version: "3.7"
+
+services:
+  app_server:
+    image: "shopware:${PROJECT_NAME}"
+    build: .
+    depends_on:
+      - mysql
+    ports:
+      -  "8000:${HTTP_PORT}"
+    environment:
+      # define yourself
+      - DATABASE_URL="mysql://root:root@mysql:3306/shopware"
+      - APP_URL="http://${HTTP_HOST}:${HTTP_PORT}"
+      - MAILER_URL=smtp://localhost:25?encryption=&auth_mode=
+    volumes:
+      - "../:/sw6/"
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
