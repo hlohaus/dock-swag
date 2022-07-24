@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 export DOCKER_BIN_DIR="$(cd -P "$(dirname "$BASH_SOURCE")" && pwd -P)"
 
-source $DOCKER_BIN_DIR/env
+cd $DOCKER_BIN_DIR/../
 
-source $DOCKER_BIN_DIR/exec $DOCKER_PROJECT_DIR/bin/console $1
+docker-compose stop

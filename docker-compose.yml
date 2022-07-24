@@ -1,23 +1,47 @@
-#override defaults for dev
 version: "3.7"
 
 services:
-  app_server:
-    image: "shopware:${PROJECT_NAME}"
-    build: .
+  app:
+    container_name: ${PLATFORM_NAME}-${PROJECT_NAME}
+    image: ${PLATFORM_NAME}:${PROJECT_NAME}
+    env_file: .env
+    build:
+      context: ../
+      dockerfile: dock-swag/build/Dockerfile
+      args:
+        - PROJECT_DIR=${PROJECT_DIR}
+        - BUILD_DIR=${BUILD_DIR}
+        - COMPOSER_HOME=${COMPOSER_HOME}
+        - HTTP_HOST=${HTTP_HOST}
+        - HTTP_PORT=${HTTP_PORT}
+        - DOCKER_USER=${DOCKER_USER}
+        - DOCKER_PROJECT_DIR=${DOCKER_PROJECT_DIR}
     depends_on:
       - mysql
     ports:
-      -  "8000:${HTTP_PORT}"
+      -  "${HTTP_PORT}:8000"
     environment:
-      # define yourself
-      - DATABASE_URL="mysql://root:root@mysql:3306/shopware"
-      - APP_URL="http://${HTTP_HOST}:${HTTP_PORT}"
+      - APP_SECRET=123456789
+      - DATABASE_URL=mysql://root:root@mysql:3306/shopware
+      - APP_URL=http://${HTTP_HOST}:${HTTP_PORT}
       - MAILER_URL=smtp://localhost:25?encryption=&auth_mode=
     volumes:
-      - "../:/sw6/"
+      - ../${PROJECT_DIR}/bin:${DOCKER_PROJECT_DIR}/bin
+      - ../${PROJECT_DIR}/config:${DOCKER_PROJECT_DIR}/config
+      - ../${PROJECT_DIR}/custom:${DOCKER_PROJECT_DIR}/custom
+      - ../${PROJECT_DIR}/files:${DOCKER_PROJECT_DIR}/files
+      - ../${PROJECT_DIR}/public:${DOCKER_PROJECT_DIR}/public
+      - ../${PROJECT_DIR}/src:${DOCKER_PROJECT_DIR}/src
+      - ../${PROJECT_DIR}/var/log:${DOCKER_PROJECT_DIR}/var/log
+      - ../${PROJECT_DIR}/vendor:${DOCKER_PROJECT_DIR}/vendor
+      - ../${PROJECT_DIR}/composer.*:${DOCKER_PROJECT_DIR}/composer.*
+      - ../.env:${DOCKER_PROJECT_DIR}/.env
 
   mysql:
+    container_name: mysql-${PROJECT_NAME}
     image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=root
+
+volumes:
+  sw:

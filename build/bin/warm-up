@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+export BUILD_BIN_DIR="$(cd -P $(dirname $BASH_SOURCE) && pwd -P)"
+export DOCKER_BIN_DIR=$(dirname $BUILD_BIN_DIR)
+export DOCKER_ROOT=$(dirname $DOCKER_BIN_DIR)
+export PROJECT_ROOT=$(dirname $DOCKER_ROOT)
+
+if [ "$1" ]; then
+    export PROJECT_ROOT=$1
+fi
+
+composer install -d$PROJECT_ROOT
+touch install.lock
+exec "$PROJECT_ROOT/bin/console" system:generate-jwt-secret
+
+exec "$PROJECT_ROOT/bin/console" assets:install
+rm -Rf var/cache/*
+exec "$PROJECT_ROOT/bin/console" theme:compile
