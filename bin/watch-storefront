@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+export STOREFRONT_DIR=vendor/shopware/storefront/Resources/app/storefront
+export DOCKER_BIN_DIR="$(cd -P "$(dirname "$BASH_SOURCE")" && pwd -P)"
+
+source $DOCKER_BIN_DIR/env
+
+$DOCKER_BIN_DIR/console feature:dump
+#source $DOCKER_BIN_DIR/console theme:compile
+$DOCKER_BIN_DIR/console theme:dump
+
+export DOCKER_EXEC_OPTIONS="$DOCKER_EXEC_DEFAULTS -d -ePROJECT_ROOT=$DOCKER_PROJECT_DIR"
+export DOCKER_EXEC_OPTIONS="$DOCKER_EXEC_OPTIONS -eSTOREFRONT_PROXY_PORT=$STOREFRONT_PROXY_PORT"
+export DOCKER_EXEC_OPTIONS="$DOCKER_EXEC_OPTIONS -p$STOREFRONT_PROXY_PORT:$STOREFRONT_PROXY_PORT/tcp"
+
+docker run $DOCKER_EXEC_OPTIONS $PLATFORM_NAME:$PROJECT_NAME \
+  npm --prefix $STOREFRONT_DIR run-script hot-proxy

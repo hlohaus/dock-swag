@@ -15,6 +15,7 @@ services:
         - HTTP_HOST=${HTTP_HOST}
         - HTTP_PORT=${HTTP_PORT}
         - DOCKER_USER=${DOCKER_USER}
+        - DOCKER_USER_ID=${DOCKER_USER_ID}
         - DOCKER_PROJECT_DIR=${DOCKER_PROJECT_DIR}
     depends_on:
       - mysql
@@ -34,7 +35,8 @@ services:
       - ../${PROJECT_DIR}/src:${DOCKER_PROJECT_DIR}/src
       - ../${PROJECT_DIR}/var/log:${DOCKER_PROJECT_DIR}/var/log
       - ../${PROJECT_DIR}/vendor:${DOCKER_PROJECT_DIR}/vendor
-      - ../${PROJECT_DIR}/composer.*:${DOCKER_PROJECT_DIR}/composer.*
+      - ../${PROJECT_DIR}/composer.json:${DOCKER_PROJECT_DIR}/composer.json
+      - ../${PROJECT_DIR}/composer.lock:${DOCKER_PROJECT_DIR}/composer.lock
       - ../.env:${DOCKER_PROJECT_DIR}/.env
 
   mysql:

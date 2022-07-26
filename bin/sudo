@@ -3,4 +3,8 @@ export DOCKER_BIN_DIR="$(cd -P "$(dirname "$BASH_SOURCE")" && pwd -P)"
 
 source $DOCKER_BIN_DIR/env
 
-docker exec -it -uroot:root $PLATFORM_NAME-$PROJECT_NAME $1
+if [ $1 ]; then
+    export DOCKER_EXEC_COMMAND=$1
+fi
+
+docker exec $DOCKER_EXEC_DEFAULTS -uroot:root $PLATFORM_NAME-$PROJECT_NAME $DOCKER_EXEC_COMMAND

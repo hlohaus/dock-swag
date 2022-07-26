@@ -9,10 +9,15 @@ if [ "$1" ]; then
     export PROJECT_ROOT=$1
 fi
 
-composer install -d$PROJECT_ROOT
-touch install.lock
-exec "$PROJECT_ROOT/bin/console" system:generate-jwt-secret
+cd $PROJECT_ROOT
 
-exec "$PROJECT_ROOT/bin/console" assets:install
+composer install --no-scripts --dev
+touch install.lock
+bin/console system:generate-jwt-secret
+
 rm -Rf var/cache/*
-exec "$PROJECT_ROOT/bin/console" theme:compile
+
+bin/console feature:dump
+bin/console theme:dump
+bin/console assets:install
+bin/console theme:compile

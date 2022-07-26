@@ -3,4 +3,4 @@ export DOCKER_BIN_DIR="$(cd -P "$(dirname "$BASH_SOURCE")" && pwd -P)"
 
 source $DOCKER_BIN_DIR/env
 
-source $DOCKER_BIN_DIR/exec $DOCKER_PROJECT_DIR/bin/console $1
+source $DOCKER_BIN_DIR/exec $DOCKER_PROJECT_DIR/bin/console $1 $2
