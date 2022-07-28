@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 export DOCKER_BIN_DIR="$(cd -P "$(dirname "$BASH_SOURCE")" && pwd -P)"
 
-exec $DOCKER_BIN_DIR/exec /bin/sh
+exec $DOCKER_BIN_DIR/exec

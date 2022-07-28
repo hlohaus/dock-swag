@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
+if [ !$DOCKER_BIN_DIR ]; then
+  export DOCKER_BIN_DIR=$(cd -P "$(dirname $BASH_SOURCE)" && pwd -P)
+fi
 
-export DOCKER_BIN_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-
-export DOCKER_ROOT=$(dirname "DOCKER_BIN_DIR")
+export DOCKER_ROOT=$(dirname $DOCKER_BIN_DIR)
 
 export $(cat "$DOCKER_ROOT/.env" | xargs)

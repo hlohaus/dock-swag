@@ -4,6 +4,7 @@ services:
   app:
     container_name: ${PLATFORM_NAME}-${PROJECT_NAME}
     image: ${PLATFORM_NAME}:${PROJECT_NAME}
+    hostname: ${PROJECT_NAME}
     env_file: .env
     build:
       context: ../
@@ -38,12 +39,16 @@ services:
       - ../${PROJECT_DIR}/composer.json:${DOCKER_PROJECT_DIR}/composer.json
       - ../${PROJECT_DIR}/composer.lock:${DOCKER_PROJECT_DIR}/composer.lock
       - ../.env:${DOCKER_PROJECT_DIR}/.env
+    networks:
+      - app_net
 
   mysql:
     container_name: mysql-${PROJECT_NAME}
     image: mysql:5.7
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
-volumes:
-  sw:
+networks:
+  app_net:
+    external:
+      name: app_net

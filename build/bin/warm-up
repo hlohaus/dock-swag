@@ -1,12 +1,14 @@
-#!/usr/bin/env bash
-
-export BUILD_BIN_DIR="$(cd -P $(dirname $BASH_SOURCE) && pwd -P)"
-export DOCKER_BIN_DIR=$(dirname $BUILD_BIN_DIR)
-export DOCKER_ROOT=$(dirname $DOCKER_BIN_DIR)
-export PROJECT_ROOT=$(dirname $DOCKER_ROOT)
+#!/usr/bin/env /bin/sh
 
 if [ "$1" ]; then
     export PROJECT_ROOT=$1
+elif [ $PROJECT_DIR ]; then
+    export PROJECT_ROOT="/§$PROJECT_DIR"
+else
+  export BUILD_BIN_DIR="$(cd -P $(dirname $BASH_SOURCE) && pwd -P)"
+  export DOCKER_BIN_DIR=$(dirname $BUILD_BIN_DIR)
+  export DOCKER_ROOT=$(dirname $DOCKER_BIN_DIR)
+  export PROJECT_ROOT=$(dirname $DOCKER_ROOT)
 fi
 
 cd $PROJECT_ROOT
@@ -14,6 +16,7 @@ cd $PROJECT_ROOT
 composer install --no-scripts --dev
 touch install.lock
 bin/console system:generate-jwt-secret
+bin/console database:migrate --all
 
 rm -Rf var/cache/*
 

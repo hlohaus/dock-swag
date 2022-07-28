@@ -1,0 +1,6 @@
+#!/usr/bin/env /bin/bash
+
+export DOCKER_BIN_DIR="$(cd -P "$(dirname "$BASH_SOURCE")" && pwd -P)"
+export DOCKER_SERVICE="mysql"
+
+source $DOCKER_BIN_DIR/exec
