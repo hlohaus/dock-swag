@@ -2,9 +2,8 @@ version: "3.7"
 
 services:
   app:
-    container_name: ${PLATFORM_NAME}-${PROJECT_NAME}
-    image: ${PLATFORM_NAME}:${PROJECT_NAME}
-    hostname: ${PROJECT_NAME}
+    container_name: ${PROJECT_NAME}
+    image: ${PROJECT_NAME}:${PLATFORM_NAME}
     env_file: .env
     build:
       context: ../
@@ -35,7 +34,7 @@ services:
       - ../${PROJECT_DIR}/public:${DOCKER_PROJECT_DIR}/public
       - ../${PROJECT_DIR}/src:${DOCKER_PROJECT_DIR}/src
       - ../${PROJECT_DIR}/var/log:${DOCKER_PROJECT_DIR}/var/log
-      - ../${PROJECT_DIR}/vendor:${DOCKER_PROJECT_DIR}/vendor
+      - ../${PROJECT_DIR}/platform:${DOCKER_PROJECT_DIR}/platform
       - ../${PROJECT_DIR}/composer.json:${DOCKER_PROJECT_DIR}/composer.json
       - ../${PROJECT_DIR}/composer.lock:${DOCKER_PROJECT_DIR}/composer.lock
       - ../.env:${DOCKER_PROJECT_DIR}/.env
@@ -43,8 +42,10 @@ services:
       - app_net
 
   mysql:
-    container_name: mysql-${PROJECT_NAME}
+    container_name: ${PROJECT_NAME}-mysql
     image: mysql:5.7
+    ports:
+      - "33:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 

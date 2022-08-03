@@ -21,7 +21,7 @@ RUN apk --no-cache add \
         php7-mysqli php7-openssl php7-pdo_mysql \
         php7-session php7-simplexml php7-tokenizer php7-xml php7-xmlreader php7-xmlwriter \
         php7-zip php7-zlib php7-phar php7-opcache php7-sodium git \
-        gnu-libiconv npm jq make g++ \
+        gnu-libiconv npm jq make g++ composer \
     && adduser -u $DOCKER_USER_ID -D -h$DOCKER_PROJECT_DIR $DOCKER_USER $DOCKER_USER \
     && rm /etc/nginx/conf.d/default.conf \
     && mkdir -p $COMPOSER_HOME
