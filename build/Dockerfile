@@ -1,4 +1,4 @@
-FROM alpine:3.13
+FROM php:8.0-alpine
 
 ARG PROJECT_DIR
 ARG BUILD_DIR
@@ -15,24 +15,24 @@ ENV FPM_PING_URL=http://127.0.0.1:$HTTP_HOST/fpm-ping
 
 RUN apk --no-cache add \
         nginx supervisor curl zip rsync xz coreutils \
-        php7 php7-fpm \
-        php7-ctype php7-curl php7-dom php7-fileinfo php7-gd \
-        php7-iconv php7-intl php7-json php7-mbstring \
-        php7-mysqli php7-openssl php7-pdo_mysql \
-        php7-session php7-simplexml php7-tokenizer php7-xml php7-xmlreader php7-xmlwriter \
-        php7-zip php7-zlib php7-phar php7-opcache php7-sodium git \
-        gnu-libiconv npm jq make g++ composer \
-    && adduser -u $DOCKER_USER_ID -D -h$DOCKER_PROJECT_DIR $DOCKER_USER $DOCKER_USER \
-    && rm /etc/nginx/conf.d/default.conf \
-    && mkdir -p $COMPOSER_HOME
+        php8 php8-fpm \
+        php8-ctype php8-curl php8-dom php8-fileinfo php8-gd \
+        php8-iconv php8-intl php8-json php8-mbstring \
+        php8-mysqli php8-openssl php8-pdo_mysql \
+        php8-session php8-simplexml php8-tokenizer php8-xml php8-xmlreader php8-xmlwriter \
+        php8-zip php8-zlib php8-phar php8-opcache php8-sodium git \
+        gnu-libiconv npm jq make g++ composer
+RUN adduser -u $DOCKER_USER_ID -D -h$DOCKER_PROJECT_DIR $DOCKER_USER $DOCKER_USER
+RUN docker-php-ext-install pdo_mysql
+RUN mkdir -p $COMPOSER_HOME
 
 # Copy system configs
 COPY $BUILD_DIR/config/etc /etc
 
 # Make sure files/folders needed by the processes are accessible when they run under the sw6
 RUN mkdir -p /var/{lib,tmp,log}/nginx \
-    && chown -R $DOCKER_USER.$DOCKER_USER /run /var/{lib,tmp,log}/nginx \
-    && chown -R $DOCKER_USER.$DOCKER_USER $COMPOSER_HOME
+    && chown -R $DOCKER_USER:$DOCKER_USER /run /var/{lib,tmp,log}/nginx \
+    && chown -R $DOCKER_USER:$DOCKER_USER $COMPOSER_HOME
 
 WORKDIR $DOCKER_PROJECT_DIR
 
