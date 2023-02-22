@@ -9,12 +9,12 @@ if [ $1 ]; then
   export DOCKER_EXEC_COMMAND=$1
 fi
 
-if [ -z $DOCKER_EXEC_OPTIONS ]; then
+if [ -z "$DOCKER_EXEC_OPTIONS" ]; then
   export DOCKER_EXEC_OPTIONS=$DOCKER_EXEC_DEFAULTS
 fi
 
 if [ -z $DOCKER_SERVICE ]; then
-  export DOCKER_SERVICE=$PROJECT_NAME
+  export DOCKER_SERVICE="$PROJECT_NAME-app"
 fi
 
 if [ $DOCKER_SERVICE == "mysql" ]; then
