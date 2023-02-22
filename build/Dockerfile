@@ -1,4 +1,4 @@
-FROM php:8.0-alpine
+FROM php:8.2-cli-alpine3.17
 
 ARG PROJECT_DIR
 ARG BUILD_DIR
@@ -15,13 +15,31 @@ ENV FPM_PING_URL=http://127.0.0.1:$HTTP_HOST/fpm-ping
 
 RUN apk --no-cache add \
         nginx supervisor curl zip rsync xz coreutils \
-        php8 php8-fpm \
-        php8-ctype php8-curl php8-dom php8-fileinfo php8-gd \
-        php8-iconv php8-intl php8-json php8-mbstring \
-        php8-mysqli php8-openssl php8-pdo_mysql \
-        php8-session php8-simplexml php8-tokenizer php8-xml php8-xmlreader php8-xmlwriter \
-        php8-zip php8-zlib php8-phar php8-opcache php8-sodium git \
-        gnu-libiconv npm jq make g++ composer
+        php php-fpm \
+        php-ctype php-curl php-dom php-fileinfo php-gd \
+        php-iconv php-intl php-json php-mbstring \
+        php-mysqli php-openssl php-pdo_mysql \
+        php-session php-simplexml php-tokenizer php-xml php-xmlreader php-xmlwriter \
+        php-zip php-zlib php-phar php-opcache php-sodium git \
+        gnu-libiconv npm jq make g++ composer bash
+
+RUN set -xe \
+    && apk add --update \
+        icu \
+    && apk add --no-cache --virtual .php-deps \
+        make \
+    && apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
+        zlib-dev \
+        icu-dev \
+        g++ \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
+    && docker-php-ext-enable intl \
+    && { find /usr/local/lib -type f -print0 | xargs -0r strip --strip-all -p 2>/dev/null || true; } \
+    && apk del .build-deps \
+    && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
+
 RUN adduser -u $DOCKER_USER_ID -D -h$DOCKER_PROJECT_DIR $DOCKER_USER $DOCKER_USER
 RUN docker-php-ext-install pdo_mysql
 RUN mkdir -p $COMPOSER_HOME
@@ -41,6 +59,8 @@ USER $DOCKER_USER
 ADD --chown=$DOCKER_USER $PROJECT_DIR $DOCKER_PROJECT_DIR
 
 EXPOSE $HTTP_PORT
+
+EXPOSE $STOREFRONT_PROXY_PORT
 
 VOLUME $DOCKER_PROJECT_DIR
 
